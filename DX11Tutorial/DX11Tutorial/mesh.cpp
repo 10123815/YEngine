@@ -77,3 +77,25 @@ bool ysd_simple_engine::Mesh::colors(D3DXVECTOR4 * color) const
 	return true;
 }
 
+bool ysd_simple_engine::Mesh::set_uv0(D3DXVECTOR2 * uvs, UINT count)
+{
+	if (count != vertices_count_)
+		return false;
+
+	uv0_ = new D3DXVECTOR2[count];
+	for (size_t i = 0; i < count; i++)
+	{
+		uv0_[i] = uvs[i];
+	}
+	return true;
+}
+
+bool ysd_simple_engine::Mesh::uv0(D3DXVECTOR2 * uvs) const
+{
+	for (size_t i = 0; i < vertices_count_; i++)
+	{
+		uvs[i] = uv0_[i];
+	}
+	return true;
+}
+

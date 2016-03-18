@@ -16,12 +16,16 @@ void ysd_simple_engine::Graphic::RenderFrame( )
 {
 	D3DUtility::Instance( )->BeginScene( );
 
+	// scene setup
 	p_camera_->Update( );
+
+	// constant buffer
+	p_cbuffer_->SetWVPMatrix(world_matrix_, p_camera_->view_matrix( ), proj_matrix_);
 
 	// Render all objects in th queue
 	for (auto& obj : render_obj_queue_)
 	{
-		obj->Render(world_matrix_, p_camera_->view_matrix( ), proj_matrix_);
+		obj->Render( );
 	}
 
 	D3DUtility::Instance( )->EndScene( );
@@ -31,6 +35,9 @@ void ysd_simple_engine::Graphic::Initialize(HWND hwnd)
 {
 	p_camera_ = std::make_unique<Camera>( );
 	p_camera_->set_position({ 0.0f, 0.0f, -10.0f });
+
+	p_cbuffer_ = std::make_unique<ShaderConstantBuffer>( );
+	p_cbuffer_->CreateMatrixBuffer( );
 
 	float field_view, screen_aspect;// Setup the projection matrix.
 	field_view = (float)D3DX_PI / 4.0f;
@@ -49,9 +56,15 @@ void ysd_simple_engine::Graphic::Initialize(HWND hwnd)
 void ysd_simple_engine::Graphic::ShutDown( )
 {
 
+	if (p_cbuffer_)
+	{
+		p_cbuffer_->Release( );
+		p_cbuffer_.reset(nullptr);
+	}
+
 	if (p_camera_)
 	{
-		p_camera_.reset( );
+		p_camera_.reset(nullptr);
 	}
 
 	for (auto& obj : render_obj_queue_)

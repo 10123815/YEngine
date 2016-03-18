@@ -29,6 +29,15 @@ void ysd_simple_engine::Engine::Initialize (HWND hwnd)
 
 void ysd_simple_engine::Engine::ShutDown ( )
 {
+	// Sub-engine
+	if (Graphic::Instance( ))
+	{
+		Graphic::Instance( )->ShutDown( );
+		// Release and delete the owned object.
+		Graphic::Instance( ).reset(nullptr);
+	}
+
+	// Utility
 	if (D3DUtility::Instance( ))
 	{
 		D3DUtility::Instance( )->ShutDown ( );

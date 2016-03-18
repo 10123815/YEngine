@@ -32,6 +32,13 @@ namespace ysd_simple_engine
 		D3DXMATRIX proj;
 	};
 
+	struct LightBuffer
+	{
+		D3DXVECTOR4 diffCol;
+		D3DXVECTOR3 lightDir;
+		float padding;
+	};
+
 	class D3DUtility : public ISystem
 	{
 
@@ -65,9 +72,9 @@ namespace ysd_simple_engine
 
 #pragma endregion
 
-		bool LoadTexture(WCHAR* file_name, ID3D11ShaderResourceView** pp_texture_)
+		bool LoadShaderResource(WCHAR* file_name, ID3D11ShaderResourceView** pp_shader_res_)
 		{
-			if (FAILED(D3DX11CreateShaderResourceViewFromFile(p_d3d_device_, file_name, NULL, NULL, pp_texture_, NULL)))
+			if (FAILED(D3DX11CreateShaderResourceViewFromFile(p_d3d_device_, file_name, NULL, NULL, pp_shader_res_, NULL)))
 				return false;
 			return true;
 		}
@@ -103,16 +110,23 @@ namespace ysd_simple_engine
 			return true;
 		}
 
+		bool CreateSamplerState(D3D11_SAMPLER_DESC* p_sampler_desc, ID3D11SamplerState** pp_sampler_state)
+		{
+			if (FAILED(p_d3d_device_->CreateSamplerState(p_sampler_desc, pp_sampler_state)))
+				return false;
+			return true;
+		}
+
 		void SetWVPMatrix(ID3D11Buffer* p_matrix_buffer, const D3DXMATRIX &world, const D3DXMATRIX &view, const D3DXMATRIX &proj)
 		{
 			// Lock
 			D3D11_MAPPED_SUBRESOURCE mapped_resource;
 			if (FAILED(p_d3d_device_context_->Map(p_matrix_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource)))
 			{
-				throw std::exception("Lock constance buffer failed.");
+				throw std::exception("Lock constant buffer failed.");
 			}
 
-			// Write
+			// Write. pData is a void*
 			MatrixBuffer* p_data = (MatrixBuffer*)mapped_resource.pData;
 			p_data->world = world;
 			p_data->view = view;
@@ -125,6 +139,29 @@ namespace ysd_simple_engine
 			p_d3d_device_context_->VSSetConstantBuffers(0, 1, &p_matrix_buffer);
 		}
 
+		void SetLight(ID3D11Buffer* p_light_buffer, D3DXVECTOR4 diffuse_color, D3DXVECTOR3 light_dir)
+		{
+			D3D11_MAPPED_SUBRESOURCE mapped_resource;
+			if (FAILED(p_d3d_device_context_->Map(p_light_buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped_resource)))
+			{
+				throw std::exception("Lock constant buffer failed.");
+			}
+
+			LightBuffer* p_data = (LightBuffer*)mapped_resource.pData;
+			p_data->diffCol = diffuse_color;
+			p_data->lightDir = light_dir;
+			p_data->padding = 0;
+
+			p_d3d_device_context_->Unmap(p_light_buffer, 0);
+
+			p_d3d_device_context_->PSSetConstantBuffers(0, 1, &p_light_buffer);
+		}
+
+		void SetShaderResourceView(ID3D11ShaderResourceView* p_shader_res_view)
+		{
+			p_d3d_device_context_->PSSetShaderResources(0, 1, &p_shader_res_view);
+		}
+
 		void SetShader(ID3D11InputLayout* p_input_layout, ID3D11VertexShader* p_vs, ID3D11PixelShader* p_ps)
 		{
 
@@ -134,6 +171,11 @@ namespace ysd_simple_engine
 			// Set vs and ps
 			p_d3d_device_context_->VSSetShader(p_vs, NULL, 0);
 			p_d3d_device_context_->PSSetShader(p_ps, NULL, 0);
+		}
+
+		void SetSampler(ID3D11SamplerState* p_samplers)
+		{
+			p_d3d_device_context_->PSSetSamplers(0, 1, &p_samplers);
 		}
 
 		void ShadeWithShader(UINT count)

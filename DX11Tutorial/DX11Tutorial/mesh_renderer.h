@@ -83,6 +83,21 @@ namespace ysd_simple_engine
 
 	};
 
+	class TexVertexDataType : public VertexDataType
+	{
+	public:
+		TexVertexDataType( ) { size_ = sizeof(Vertex); }
+
+		// Í¨¹ý VertexDataType ¼Ì³Ð
+		virtual void CreateVertexIndexBuffer(const Mesh & mesh, ID3D11Buffer ** pp_vb, ID3D11Buffer ** pp_ib) override;
+
+		struct Vertex
+		{
+			D3DXVECTOR3 position;
+			D3DXVECTOR2 uv;
+		};
+	};
+
 	class MeshRenderer
 	{
 	public:
@@ -95,7 +110,7 @@ namespace ysd_simple_engine
 		}
 
 		void Init( );
-		void Render(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX proj);
+		void Render( );
 		void Release( );
 
 	private:

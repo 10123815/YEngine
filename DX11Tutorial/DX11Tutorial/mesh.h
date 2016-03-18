@@ -33,6 +33,9 @@ namespace ysd_simple_engine
 		bool set_colors(D3DXVECTOR4* colors, UINT count);
 		bool colors(D3DXVECTOR4* color) const;
 
+		bool set_uv0(D3DXVECTOR2* uvs, UINT count);
+		bool uv0(D3DXVECTOR2* uvs) const;
+
 		UINT vertices_count( ) const { return vertices_count_; }
 		UINT indices_count( ) const { return indices_count_; }
 

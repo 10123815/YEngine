@@ -1,12 +1,47 @@
 #pragma once
 
 #include "d3d_utility.h"
+#include "texture.h"
 
 #include <d3d11.h>
 #include <D3DX11async.h>
 
 namespace  ysd_simple_engine
 {
+
+	class ShaderConstantBuffer
+	{
+	public:
+		ShaderConstantBuffer( )
+		{
+			p_matrix_buffer_ = 0;
+		}
+
+		void CreateMatrixBuffer( );
+		void SetWVPMatrix(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX proj);
+
+		void CreateLightBuffer( );
+		void SetLightBUffer( );
+
+		void Release( )
+		{
+			if (p_matrix_buffer_)
+			{
+				p_matrix_buffer_->Release( );
+				p_matrix_buffer_ = 0;
+			}
+
+			if (p_light_buffer_)
+			{
+				p_light_buffer_->Release( );
+				p_light_buffer_ = 0;
+			}
+		}
+
+	private:
+		ID3D11Buffer* p_matrix_buffer_;
+		ID3D11Buffer* p_light_buffer_;
+	};
 
 	class Shader
 	{
@@ -16,27 +51,19 @@ namespace  ysd_simple_engine
 			p_vertex_shader_ = 0;
 			p_pixel_shader_ = 0;
 			p_input_layout_ = 0;
-			p_matrix_buffer_ = 0;
 		}
 
 		virtual	void Init(WCHAR* vs_file_name, WCHAR* ps_file_name);
 
-		virtual void SetParams(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX proj);
-
+		virtual void SetParams( ) = 0;
 		virtual void Shade(UINT count);
 
-		void ReleaseShader( )
+		virtual void ReleaseShader( )
 		{
 			if (p_input_layout_)
 			{
 				p_input_layout_->Release( );
 				p_input_layout_ = 0;
-			}
-
-			if (p_matrix_buffer_)
-			{
-				p_matrix_buffer_->Release( );
-				p_matrix_buffer_ = 0;
 			}
 
 			if (p_pixel_shader_)
@@ -57,30 +84,79 @@ namespace  ysd_simple_engine
 		virtual void SetInputLayout(ID3D10Blob* p_vs_code_buffer, ID3D10Blob* p_ps_code_buffer) = 0;
 
 		ID3D11InputLayout*  p_input_layout_;
+		ID3D11VertexShader* p_vertex_shader_;
+		ID3D11PixelShader*	p_pixel_shader_;
 
 	private:
 
 		void CreateShaderAndLayout(WCHAR* vs_file_name, WCHAR* ps_file_name);
-
-		void CreateMatrixBuffer( );
-
-		ID3D11VertexShader* p_vertex_shader_;
-		ID3D11PixelShader*	p_pixel_shader_;
-		ID3D11Buffer*		p_matrix_buffer_;
 	};
 
 	class ColorShader : public Shader
 	{
-	public:
-
 	protected:
 
 		// 通过 Shader 继承
 		virtual void SetInputLayout(ID3D10Blob* p_vs_code_buffer, ID3D10Blob* p_ps_code_buffer) override;
 
-	private:
+	};
+
+	class TexShader : public Shader
+	{
+	public:
+		TexShader(Texture* p_tex)
+			:p_texture_(p_tex)
+		{
+			p_sampler_state_ = 0;
+		}
+
+		virtual void Init(WCHAR* vs_file_name, WCHAR* ps_file_name) override;
+
+		virtual void SetParams( ) override;
+		virtual void Shade(UINT count) override;
+
+		virtual void ReleaseShader( ) override
+		{
+			if (p_sampler_state_)
+			{
+				p_sampler_state_->Release( );
+				p_sampler_state_ = 0;
+			}
+
+			Shader::ReleaseShader( );
+
+			if (p_texture_)
+			{
+				p_texture_->Release( );
+				p_texture_.reset( );
+			}
+		}
+
+	protected:
+		// 通过 Shader 继承
+		virtual void SetInputLayout(ID3D10Blob * p_vs_code_buffer, ID3D10Blob * p_ps_code_buffer) override;
+
+		virtual void SetSamplerState( );
+
+		ID3D11SamplerState* p_sampler_state_;
+
+		std::shared_ptr<Texture> p_texture_;
+	};
+
+	class DiffuseLightShader : public TexShader
+	{
+	public:
+		DiffuseLightShader(Texture* p_tex)
+			: TexShader(p_tex)
+		{
+		}
+
+	protected:
+		// 通过 Shader 继承
+		virtual void SetInputLayout(ID3D10Blob * p_vs_code_buffer, ID3D10Blob * p_ps_code_buffer) override;
 
 	};
+
 }
 
 

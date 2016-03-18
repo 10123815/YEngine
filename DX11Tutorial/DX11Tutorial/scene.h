@@ -2,6 +2,7 @@
 
 #include "engine.h"
 #include "mesh_renderer.h"
+#include "texture.h"
 
 #include <memory>
 

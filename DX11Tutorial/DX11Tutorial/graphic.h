@@ -37,6 +37,8 @@ namespace ysd_simple_engine
 
 		std::unique_ptr<Camera> p_camera_;
 
+		std::unique_ptr<ShaderConstantBuffer> p_cbuffer_;
+
 		D3DXMATRIX proj_matrix_;
 		D3DXMATRIX world_matrix_;
 		D3DXMATRIX ortho_matrix_;

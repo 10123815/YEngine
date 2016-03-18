@@ -1,24 +1,26 @@
 #pragma once
 
-#include <d3d11.h>
+#include "d3d_utility.h"
 
-#include "Engine.h"
+#include <d3d11.h>
 
 namespace ysd_simple_engine
 {
-	class Textrue
+	class Texture
 	{
 	public:
-		Textrue ( );
-		~Textrue ( );
+		Texture( );
+		~Texture( );
 
-		void Load (WCHAR* file_name);
-		void Release ( );
+		void Load(WCHAR* file_name);
+		void Release( );
 
-		std::shared_ptr<ID3D11ShaderResourceView> texture ( ) const { return p_texture_; }
+		ID3D11ShaderResourceView* texture( ) { return p_texture_shader_res_; }
+
+		void SetResource( );
 
 	private:
-		std::shared_ptr<ID3D11ShaderResourceView> p_texture_;
+		ID3D11ShaderResourceView* p_texture_shader_res_;
 	};
 
 }

@@ -3,31 +3,32 @@
 
 using namespace ysd_simple_engine;
 
-Textrue::Textrue( )
+Texture::Texture( )
 {
-	p_texture_ = 0;
+	p_texture_shader_res_ = 0;
 }
 
 
-Textrue::~Textrue( )
+Texture::~Texture( )
 {
 }
 
-void ysd_simple_engine::Textrue::Load(WCHAR * file_name)
+void ysd_simple_engine::Texture::Load(WCHAR * file_name)
 {
-	ID3D11ShaderResourceView* p_tex;
-	HRESULT result = D3DUtility::Instance( )->LoadTexture(file_name, &p_tex);
-	if (FAILED(result))
+	if (!D3DUtility::Instance( )->LoadShaderResource(file_name, &p_texture_shader_res_))
 		throw std::exception("Load texture failed.");
-	std::shared_ptr<ID3D11ShaderResourceView> sp_tex(p_tex);
-	p_texture_ = sp_tex;
 }
 
-void ysd_simple_engine::Textrue::Release( )
+void ysd_simple_engine::Texture::Release( )
 {
-	if (p_texture_)
+	if (p_texture_shader_res_)
 	{
-		p_texture_->Release( );
-		p_texture_.reset( );
+		p_texture_shader_res_->Release( );
+		p_texture_shader_res_ = 0;
 	}
+}
+
+void ysd_simple_engine::Texture::SetResource( )
+{
+	D3DUtility::Instance( )->SetShaderResourceView(p_texture_shader_res_);
 }
