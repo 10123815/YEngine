@@ -25,6 +25,24 @@ namespace ysd_simple_engine
 				indices_ = 0;
 			}
 
+			if (colors_)
+			{
+				delete[] colors_;
+				colors_ = 0;
+			}
+
+			if (uv0_)
+			{
+				delete[] uv0_;
+				uv0_ = 0;
+			}
+
+			if (uv1_)
+			{
+				delete[] uv1_;
+				uv1_ = 0;
+			}
+
 		}
 
 		bool set_vertices(D3DXVECTOR3* vertices, UINT* indices, UINT vt_count, UINT id_count);
@@ -35,6 +53,9 @@ namespace ysd_simple_engine
 
 		bool set_uv0(D3DXVECTOR2* uvs, UINT count);
 		bool uv0(D3DXVECTOR2* uvs) const;
+
+		bool set_normals(D3DXVECTOR3* normals, UINT count);
+		bool normals(D3DXVECTOR3* normals) const;
 
 		UINT vertices_count( ) const { return vertices_count_; }
 		UINT indices_count( ) const { return indices_count_; }
@@ -54,6 +75,8 @@ namespace ysd_simple_engine
 
 		// Second texture coordinates
 		D3DXVECTOR2* uv1_;
+
+		D3DXVECTOR3* normals_;
 
 		UINT* indices_;
 		UINT indices_count_;

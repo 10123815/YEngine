@@ -51,9 +51,9 @@ void ysd_simple_engine::ShaderConstantBuffer::CreateLightBuffer( )
 	}
 }
 
-void ysd_simple_engine::ShaderConstantBuffer::SetLightBUffer( )
+void ysd_simple_engine::ShaderConstantBuffer::SetLightBUffer(D3DXVECTOR3 dir, D3DXVECTOR4 col)
 {
-	// D3DUtility::Instance()->SetLight(p_light_buffer_)
+	 D3DUtility::Instance()->SetLight(p_light_buffer_, col, dir);
 }
 
 #pragma endregion
@@ -189,5 +189,17 @@ void ysd_simple_engine::TexShader::SetSamplerState( )
 
 void ysd_simple_engine::DiffuseLightShader::SetInputLayout(ID3D10Blob * p_vs_code_buffer, ID3D10Blob * p_ps_code_buffer)
 {
+	D3D11_INPUT_ELEMENT_DESC input_ele_desc[] =
+	{
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA},
+		{"TEXCOOR", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA},
+		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA}
+	};
+
+	UINT num = sizeof(input_ele_desc) / sizeof(input_ele_desc[0]);
+	if (!D3DUtility::Instance( )->CreateInputLayout(input_ele_desc, num, p_vs_code_buffer, &p_input_layout_))
+	{
+		throw std::exception("Create layout failed.");
+	}
 }
 

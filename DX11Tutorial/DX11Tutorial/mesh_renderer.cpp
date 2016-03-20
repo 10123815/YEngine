@@ -67,6 +67,40 @@ void ysd_simple_engine::TexVertexDataType::CreateVertexIndexBuffer(const Mesh & 
 	indices = 0;
 }
 
+void ysd_simple_engine::DiffuseLightVertexDataType::CreateVertexIndexBuffer(const Mesh & mesh, ID3D11Buffer ** pp_vb, ID3D11Buffer ** pp_ib)
+{
+	UINT vertex_size = mesh.vertices_count( );
+	UINT index_size = mesh.indices_count( );
+
+	Vertex* vertices = new Vertex[vertex_size];
+	D3DXVECTOR3* positions = new D3DXVECTOR3[vertex_size];
+	D3DXVECTOR2* uvs = new D3DXVECTOR2[vertex_size];
+	D3DXVECTOR3* normals = new D3DXVECTOR3[vertex_size];
+	UINT* indices = new UINT[index_size];
+
+	mesh.vertices(positions, indices);
+	mesh.uv0(uvs);
+	mesh.normals(normals);
+
+	// Position and color
+	for (size_t i = 0; i < vertex_size; i++)
+	{
+		vertices[i].position = positions[i];
+		vertices[i].uv = uvs[i];
+		vertices[i].normal = normals[i];
+	}
+
+	// Create buffer
+	Create(vertices, vertex_size, indices, index_size, pp_vb, pp_ib);
+
+
+	// Release the tmp buffer
+	delete[] vertices;
+	vertices = 0;
+
+	delete[] indices;
+	indices = 0;
+}
 
 void ysd_simple_engine::MeshRenderer::Init( )
 {

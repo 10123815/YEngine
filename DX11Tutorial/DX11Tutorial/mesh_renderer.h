@@ -98,10 +98,25 @@ namespace ysd_simple_engine
 		};
 	};
 
+	class DiffuseLightVertexDataType : public TexVertexDataType
+	{
+	public:
+
+		virtual void CreateVertexIndexBuffer(const Mesh& mesh, ID3D11Buffer** pp_vb, ID3D11Buffer** pp_ib) override;
+
+		DiffuseLightVertexDataType( ){ size_ = sizeof(Vertex); }
+		struct Vertex
+		{
+			D3DXVECTOR3 position;
+			D3DXVECTOR2 uv;
+			D3DXVECTOR3 normal;
+		};
+	};
+
 	class MeshRenderer
 	{
 	public:
-		MeshRenderer(WCHAR* vfn, WCHAR* pfn, Mesh mesh, Shader* shader, VertexDataType* vertex_data_type)
+		MeshRenderer(WCHAR* vfn, WCHAR* pfn, const Mesh& mesh, Shader* shader, VertexDataType* vertex_data_type)
 			:vs_file_name_(vfn), ps_file_name_(pfn), mesh_(mesh), p_shader_(shader), p_vertex_data_type_(vertex_data_type)
 		{
 			index_count_ = mesh_.indices_count( );

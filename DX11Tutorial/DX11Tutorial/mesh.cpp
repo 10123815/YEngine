@@ -99,3 +99,26 @@ bool ysd_simple_engine::Mesh::uv0(D3DXVECTOR2 * uvs) const
 	return true;
 }
 
+bool ysd_simple_engine::Mesh::set_normals(D3DXVECTOR3 * normals, UINT count)
+{
+	if (count != vertices_count_)
+		return false;
+
+	normals_ = new D3DXVECTOR3[count];
+	for (size_t i = 0; i < count; i++)
+	{
+		normals_[i] = normals[i];
+	}
+	return true;
+}
+
+bool ysd_simple_engine::Mesh::normals(D3DXVECTOR3 * normals) const
+{
+	for (size_t i = 0; i < vertices_count_; i++)
+	{
+		normals[i] = normals_[i];
+	}
+	return true;
+
+}
+

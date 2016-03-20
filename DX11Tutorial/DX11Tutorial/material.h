@@ -21,7 +21,7 @@ namespace  ysd_simple_engine
 		void SetWVPMatrix(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX proj);
 
 		void CreateLightBuffer( );
-		void SetLightBUffer( );
+		void SetLightBUffer(D3DXVECTOR3 dir, D3DXVECTOR4 col);
 
 		void Release( )
 		{

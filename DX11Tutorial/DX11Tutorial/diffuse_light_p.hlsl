@@ -11,7 +11,7 @@ cbuffer LightBuffer
 struct Input
 {
 	float4 position : POSITION;
-	float2 uv : TEXCOORD0;
+	float2 uv : TEXCOOR0;
 	float3 normal : NORMAL;
 };
 

@@ -5,6 +5,7 @@
 #include "material.h"
 #include "mesh_renderer.h"
 #include "camera.h"
+#include "light.h"
 
 namespace ysd_simple_engine
 {
@@ -36,6 +37,8 @@ namespace ysd_simple_engine
 		std::vector<std::shared_ptr<MeshRenderer>> render_obj_queue_;
 
 		std::unique_ptr<Camera> p_camera_;
+
+		std::unique_ptr<DirectLight> p_light_;
 
 		std::unique_ptr<ShaderConstantBuffer> p_cbuffer_;
 
