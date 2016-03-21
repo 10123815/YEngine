@@ -20,7 +20,7 @@
 
 namespace ysd_simple_engine
 {
-	class Engine : public ISystem
+	class Engine : public ISubSystem
 	{
 	public:
 		Engine ( );

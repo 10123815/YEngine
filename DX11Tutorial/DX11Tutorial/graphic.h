@@ -9,10 +9,11 @@
 
 namespace ysd_simple_engine
 {
-	class Graphic : public ISystem
+	class Graphic : public ISubSystem
 	{
 	public:
 		Graphic( );
+		Graphic(const Graphic&) = delete;
 		~Graphic( );
 
 		static std::unique_ptr<Graphic>& Instance( )

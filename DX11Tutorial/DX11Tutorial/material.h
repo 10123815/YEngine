@@ -15,7 +15,10 @@ namespace  ysd_simple_engine
 		ShaderConstantBuffer( )
 		{
 			p_matrix_buffer_ = 0;
+			p_light_buffer_ = 0;
 		}
+
+		ShaderConstantBuffer(const ShaderConstantBuffer&) = delete;
 
 		void CreateMatrixBuffer( );
 		void SetWVPMatrix(D3DXMATRIX world, D3DXMATRIX view, D3DXMATRIX proj);

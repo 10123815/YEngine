@@ -39,13 +39,14 @@ namespace ysd_simple_engine
 		float padding;
 	};
 
-	class D3DUtility : public ISystem
+	class D3DUtility : public ISubSystem
 	{
 
 		friend class Engine;
 
 	public:
 		D3DUtility( );
+		D3DUtility(const D3DUtility&) = delete;
 		~D3DUtility( );
 
 		static std::unique_ptr<D3DUtility>& Instance( )

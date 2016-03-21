@@ -128,18 +128,16 @@ namespace ysd_simple_engine
 		}
 
 		MeshRenderer(const MeshRenderer& renderer)
-		{
-			this->vs_file_name_ = renderer.vs_file_name_;
-			this->ps_file_name_ = renderer.ps_file_name_;
-			this->index_count_ = renderer.index_count_;
-
+			:vs_file_name_(renderer.vs_file_name_),
+			ps_file_name_(renderer.ps_file_name_),
+			index_count_(renderer.index_count_),
 			// point to the same mesh instance
-			this->p_mesh_ = renderer.p_mesh_;
-			this->p_shader_ = renderer.p_shader_;
-			this->p_vertex_data_type_ = renderer.p_vertex_data_type_;
-
-
-		}
+			p_mesh_(renderer.p_mesh_),
+			p_shader_(renderer.p_shader_),
+			p_vertex_data_type_(renderer.p_vertex_data_type_),
+			pp_vertex_buffer_(renderer.pp_vertex_buffer_),
+			pp_index_buffer_(renderer.pp_index_buffer_)
+		{}
 
 		void Init( );
 		void Render( );
