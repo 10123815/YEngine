@@ -116,28 +116,75 @@ namespace ysd_simple_engine
 	class MeshRenderer
 	{
 	public:
-		MeshRenderer(WCHAR* vfn, WCHAR* pfn, const Mesh& mesh, Shader* shader, VertexDataType* vertex_data_type)
-			:vs_file_name_(vfn), ps_file_name_(pfn), mesh_(mesh), p_shader_(shader), p_vertex_data_type_(vertex_data_type)
+		MeshRenderer(std::string vfn, std::string pfn, const Mesh& mesh, Shader* shader, VertexDataType* vertex_data_type)
+			:vs_file_name_(vfn), ps_file_name_(pfn), p_shader_(shader), p_vertex_data_type_(vertex_data_type)
 		{
-			index_count_ = mesh_.indices_count( );
-			p_vertex_buffer_ = 0;
-			p_index_buffer_ = 0;
+			p_mesh_ = std::make_shared<Mesh>(mesh);
+			index_count_ = p_mesh_->indices_count( );
+
+			// assign value to the pointer of pointer
+			pp_vertex_buffer_ = std::make_shared<ID3D11Buffer*>(nullptr);
+			pp_index_buffer_ = std::make_shared<ID3D11Buffer*>(nullptr);
+		}
+
+		MeshRenderer(const MeshRenderer& renderer)
+		{
+			this->vs_file_name_ = renderer.vs_file_name_;
+			this->ps_file_name_ = renderer.ps_file_name_;
+			this->index_count_ = renderer.index_count_;
+
+			// point to the same mesh instance
+			this->p_mesh_ = renderer.p_mesh_;
+			this->p_shader_ = renderer.p_shader_;
+			this->p_vertex_data_type_ = renderer.p_vertex_data_type_;
+
+
 		}
 
 		void Init( );
 		void Render( );
-		void Release( );
+		void Release( )
+		{
+			if (pp_vertex_buffer_.unique( ))
+			{
+				(*pp_vertex_buffer_)->Release( );
+				(*pp_vertex_buffer_) = 0;
+				pp_vertex_buffer_ = 0;
+			}
+			pp_vertex_buffer_.reset( );
+
+
+			if (pp_index_buffer_.unique( ))
+			{
+				(*pp_index_buffer_)->Release( );
+				(*pp_index_buffer_) = 0;
+				pp_index_buffer_ = 0;
+			}
+			pp_index_buffer_.reset( );
+
+
+			if (p_vertex_data_type_)
+			{
+				p_vertex_data_type_.reset( );
+			}
+
+			if (p_shader_)
+			{
+				p_shader_->ReleaseShader( );
+				p_shader_.reset( );
+			}
+		}
 
 	private:
-		WCHAR* vs_file_name_;
-		WCHAR* ps_file_name_;
+		std::string vs_file_name_;
+		std::string ps_file_name_;
 
-		Mesh mesh_;
+		std::shared_ptr<Mesh> p_mesh_;
 		std::shared_ptr<Shader> p_shader_;
 		std::shared_ptr<VertexDataType> p_vertex_data_type_;
 
-		ID3D11Buffer* p_vertex_buffer_;
-		ID3D11Buffer* p_index_buffer_;
+		std::shared_ptr<ID3D11Buffer*> pp_vertex_buffer_;
+		std::shared_ptr<ID3D11Buffer*> pp_index_buffer_;
 		UINT index_count_;
 	};
 

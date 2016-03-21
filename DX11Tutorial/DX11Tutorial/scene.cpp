@@ -16,8 +16,8 @@ void ysd_simple_engine::Scene::Init( )
 {
 #pragma region test
 
-	WCHAR* vfn = L"diffuse_light_v.hlsl";
-	WCHAR* pfn = L"diffuse_light_p.hlsl";
+	std::string vfn = "diffuse_light_v.hlsl";
+	std::string pfn = "diffuse_light_p.hlsl";
 
 	D3DXVECTOR3 positions[] = {{-1, -1, 0}, {-1, 1, 0}, {1, -1, 0}, {1, 1, 0}};
 	D3DXVECTOR3 normals[] = {{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1}};

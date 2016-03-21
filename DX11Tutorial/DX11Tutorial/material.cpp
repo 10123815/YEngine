@@ -61,7 +61,7 @@ void ysd_simple_engine::ShaderConstantBuffer::SetLightBUffer(D3DXVECTOR3 dir, D3
 
 #pragma region BaseShader
 
-void ysd_simple_engine::Shader::Init(WCHAR * vs_file_name, WCHAR * ps_file_name)
+void ysd_simple_engine::Shader::Init(const WCHAR * vs_file_name, const WCHAR * ps_file_name)
 {
 	CreateShaderAndLayout(vs_file_name, ps_file_name);
 }
@@ -72,7 +72,7 @@ void ysd_simple_engine::Shader::Shade(UINT count)
 	D3DUtility::Instance( )->ShadeWithShader(count);
 }
 
-void ysd_simple_engine::Shader::CreateShaderAndLayout(WCHAR * vs_file_name, WCHAR * ps_file_name)
+void ysd_simple_engine::Shader::CreateShaderAndLayout(const WCHAR * vs_file_name, const WCHAR * ps_file_name)
 {
 
 	// Compile
@@ -129,7 +129,7 @@ void ysd_simple_engine::ColorShader::SetInputLayout(ID3D10Blob* p_vs_code_buffer
 
 #pragma region TexShader
 
-void ysd_simple_engine::TexShader::Init(WCHAR * vs_file_name, WCHAR * ps_file_name)
+void ysd_simple_engine::TexShader::Init(const WCHAR * vs_file_name, const WCHAR * ps_file_name)
 {
 	Shader::Init(vs_file_name, ps_file_name);
 	SetSamplerState( );

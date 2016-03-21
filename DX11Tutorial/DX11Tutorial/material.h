@@ -53,7 +53,7 @@ namespace  ysd_simple_engine
 			p_input_layout_ = 0;
 		}
 
-		virtual	void Init(WCHAR* vs_file_name, WCHAR* ps_file_name);
+		virtual	void Init(const WCHAR* vs_file_name, const WCHAR* ps_file_name);
 
 		virtual void SetParams( ) = 0;
 		virtual void Shade(UINT count);
@@ -89,7 +89,7 @@ namespace  ysd_simple_engine
 
 	private:
 
-		void CreateShaderAndLayout(WCHAR* vs_file_name, WCHAR* ps_file_name);
+		void CreateShaderAndLayout(const WCHAR* vs_file_name, const WCHAR* ps_file_name);
 	};
 
 	class ColorShader : public Shader
@@ -110,7 +110,7 @@ namespace  ysd_simple_engine
 			p_sampler_state_ = 0;
 		}
 
-		virtual void Init(WCHAR* vs_file_name, WCHAR* ps_file_name) override;
+		virtual void Init(const WCHAR* vs_file_name, const WCHAR* ps_file_name) override;
 
 		virtual void SetParams( ) override;
 		virtual void Shade(UINT count) override;
