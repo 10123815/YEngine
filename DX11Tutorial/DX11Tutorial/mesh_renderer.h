@@ -128,16 +128,75 @@ namespace ysd_simple_engine
 		}
 
 		MeshRenderer(const MeshRenderer& renderer)
-			:vs_file_name_(renderer.vs_file_name_),
+			:
+			vs_file_name_(renderer.vs_file_name_),
 			ps_file_name_(renderer.ps_file_name_),
 			index_count_(renderer.index_count_),
-			// point to the same mesh instance
+			// point to the new instance
 			p_mesh_(renderer.p_mesh_),
-			p_shader_(renderer.p_shader_),
-			p_vertex_data_type_(renderer.p_vertex_data_type_),
-			pp_vertex_buffer_(renderer.pp_vertex_buffer_),
-			pp_index_buffer_(renderer.pp_index_buffer_)
-		{}
+			p_vertex_data_type_(renderer.p_vertex_data_type_)
+		{
+			if (this == &renderer)
+				return;
+
+			if (p_shader_.unique( ))
+			{
+				p_shader_->ReleaseShader( );
+			}
+			p_shader_ = renderer.p_shader_;
+
+			if (pp_vertex_buffer_.unique( ))
+			{
+				(*pp_vertex_buffer_)->Release( );
+				(*pp_vertex_buffer_) = 0;
+				pp_vertex_buffer_ = 0;
+			}
+			pp_vertex_buffer_ = renderer.pp_vertex_buffer_;
+
+			if (pp_index_buffer_.unique( ))
+			{
+				(*pp_index_buffer_)->Release( );
+				(*pp_index_buffer_) = 0;
+				pp_index_buffer_ = 0;
+			}
+			pp_index_buffer_ = renderer.pp_index_buffer_;
+		}
+
+		MeshRenderer& operator=(const MeshRenderer& renderer)
+		{
+			if (this == &renderer)
+				return;
+
+			vs_file_name_ = renderer.vs_file_name_;
+			ps_file_name_ = renderer.ps_file_name_;
+			index_count_ = renderer.index_count_;
+
+			// point to the new instance
+			p_mesh_ = renderer.p_mesh_;
+			p_vertex_data_type_ = renderer.p_vertex_data_type_;
+
+			if (p_shader_.unique( ))
+			{
+				p_shader_->ReleaseShader( );
+			}
+			p_shader_ = renderer.p_shader_;
+
+			if (pp_vertex_buffer_.unique( ))
+			{
+				(*pp_vertex_buffer_)->Release( );
+				(*pp_vertex_buffer_) = 0;
+				pp_vertex_buffer_ = 0;
+			}
+			pp_vertex_buffer_ = renderer.pp_vertex_buffer_;
+
+			if (pp_index_buffer_.unique( ))
+			{
+				(*pp_index_buffer_)->Release( );
+				(*pp_index_buffer_) = 0;
+				pp_index_buffer_ = 0;
+			}
+			pp_index_buffer_ = renderer.pp_index_buffer_;
+		}
 
 		void Init( );
 		void Render( );
@@ -151,7 +210,6 @@ namespace ysd_simple_engine
 			}
 			pp_vertex_buffer_.reset( );
 
-
 			if (pp_index_buffer_.unique( ))
 			{
 				(*pp_index_buffer_)->Release( );
@@ -160,17 +218,15 @@ namespace ysd_simple_engine
 			}
 			pp_index_buffer_.reset( );
 
+			p_vertex_data_type_.reset( );
 
-			if (p_vertex_data_type_)
-			{
-				p_vertex_data_type_.reset( );
-			}
-
-			if (p_shader_)
+			if (p_shader_.unique( ))
 			{
 				p_shader_->ReleaseShader( );
-				p_shader_.reset( );
 			}
+			p_shader_.reset( );
+
+			p_mesh_.reset( );
 		}
 
 	private:
